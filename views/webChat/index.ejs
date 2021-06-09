@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebChat</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: space-between;
+        align-items: center;
+        background-color: gainsboro;
+      }
+
+      .webchat-container {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-around;
+        align-items: center;
+        width: 90%;
+        height: 100%;
+        /* background-color: red; */
+        overflow-y: scroll;
+      }
+
+      form {
+        width: 90%;
+        display: flex;
+        flex-flow: row nowrap;
+      }
+
+      button {
+        width: 100px;
+        font-size: medium;
+        font-weight: 900;
+      }
+
+      input {
+        padding: 20px;
+        width: 100%;
+        font-size: medium;
+      }
+
+      .nickname-users-container {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: space-around;
+        align-items: stretch;
+        width: 50%;
+        height: 100%;
+        /* background-color: green; */
+      }
+
+      .nickname-container {
+        display: flex;
+        flex-flow: row nowrap;
+        width: 100%;
+      }
+
+      .users-container {
+        background-color: gray;
+        width: 100%;
+        height: 100%;
+      }
+
+      .messages-container {
+        background-color: whitesmoke;
+        width: 50%;
+        height: 100%;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: start;
+        align-items: center;
+        /* overflow-y: scroll; */
+      }
+
+      p {
+        /* margin: auto; */
+        width: 80%;
+        background-color: rosybrown;
+        padding: 20px;
+        margin: 10px 0;
+      }
+
+      .warning {
+        background-color: gainsboro;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>SOCKET.IO - WEBCHAT</h1>
+
+    <section class="webchat-container">
+      <section class="nickname-users-container">
+        <div class="nickname-container">
+          <input
+            type="text"
+            name="nickname"
+            id="nickname"
+            placeholder="Insira seu nickname"
+            data-testid="nickname-box"
+          />
+          <button
+            type="button"
+            data-testid="nickname-button"
+            id="nickname-button"
+          >
+            Salvar
+          </button>
+        </div>
+        <div class="users-container">
+          <ul></ul>
+        </div>
+      </section>
+      <div class="messages-container"></div>
+    </section>
+
+    <form action="">
+      <input
+        type="text"
+        name="message"
+        id="message"
+        placeholder="Digite uma nova mensagem aqui"
+        data-testid="message-box"
+      />
+      <button type="submit" data-testid="send-button">Enviar</button>
+    </form>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const newMessage = (message, className) => {
+      const divMessages = document.querySelector('.messages-container');
+      const p = document.createElement('p');
+      p.classList.add(className);
+      p.innerHTML = message;
+      p.setAttribute('data-testid', 'message');
+      divMessages.appendChild(p);
+    };
+
+    const updateListUsers = list => {
+      const ul = document.querySelector('ul');
+      ul.innerHTML = '';
+      list.forEach(({ id, nickname }) => {
+        const li = document.createElement('li');
+        li.setAttribute('data-testid', 'online-user');
+        nickname ? (li.innerHTML = nickname) : (li.innerHTML = id);
+        ul.appendChild(li);
+      });
+    };
+
+    const setLocalStorage = (key, value) => {
+      localStorage.setItem(key, JSON.stringify(value));
+    };
+
+    const getLocalStorage = key => {
+      const result = JSON.parse(localStorage.getItem(key));
+      if (!result) return false;
+      return result;
+    };
+
+    socket.on('welcome', ({ listUser, message }) => {
+      setLocalStorage('listUser', listUser);
+      updateListUsers(listUser);
+      newMessage(message, 'warning');
+    });
+
+    socket.on('notification', ({ listUser, message }) => {
+      updateListUsers(listUser);
+      newMessage(message, 'warning');
+    });
+
+    socket.on('logout', ({ listUser, message }) => {
+      setLocalStorage('listUser', listUser);
+      updateListUsers(listUser);
+      newMessage(message, 'warning');
+    });
+
+    // ATUALIZAR NICKNAME
+
+    const inputNickName = document.querySelector('#nickname');
+    const nickNameButton = document.querySelector('#nickname-button');
+
+    const updateNickNameUser = (list, userId, newNickName) => {
+      return list.map(({ id, nickname }) => {
+        if (id === userId) {
+          return { id, nickname: newNickName };
+        }
+        return { id, nickname };
+      });
+    };
+
+    nickNameButton.addEventListener('click', () => {
+      console.log(inputNickName.value);
+
+      const userId = socket.id.substr(0, 16);
+      const list = getLocalStorage('listUser');
+      const newList = updateNickNameUser(list, userId, inputNickName.value);
+      console.log(newList);
+
+      setLocalStorage('listUser', newList);
+      socket.emit('newList', {
+        newList,
+      });
+    });
+
+    socket.on('newList', newList => {
+      updateListUsers(newList);
+    });
+
+    // SCRIPT DA MENSAGEM
+    const checkZero = data => {
+      if (data.length == 1) {
+        data = '0' + data;
+      }
+      return data;
+    };
+
+    const dateNow = () => {
+      var today = new Date();
+      var day = today.getDate() + '';
+      var month = today.getMonth() + 1 + '';
+      var year = today.getFullYear() + '';
+      var hour = today.getHours() + '';
+      var minutes = today.getMinutes() + '';
+      var seconds = today.getSeconds() + '';
+
+      day = checkZero(day);
+      month = checkZero(month);
+      year = checkZero(year);
+      hour = checkZero(hour);
+      minutes = checkZero(minutes);
+      seconds = checkZero(seconds);
+
+      if (hour >= 12)
+        return `${day}/${month}/${year} ${hour}:${minutes}:${seconds} PM`;
+      return `${day}/${month}/${year} ${hour}:${minutes}:${seconds} AM`;
+    };
+
+    const inputMessage = document.querySelector('#message');
+    const form = document.querySelector('form');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const valueInput = inputMessage.value;
+      const userObj = getLocalStorage('listUser').find(
+        ({ id, nickname }) => id === socket.id.substr(0, 16),
+      );
+      socket.emit('message', {
+        chatMessage: valueInput,
+        nickname: userObj.nickname || socket.id.substr(0, 16),
+        date: dateNow(),
+      });
+    });
+
+    socket.on('message', message => {
+      newMessage(message);
+    });
+  </script>
+</html>
