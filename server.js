@@ -2,11 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const { webChatServer } = require('./sockets');
-const { routeWebChat } = require('./routes');
-
 const app = express();
 const http = require('http').createServer(app);
+
 const PORT = process.env.PORT || 3000;
 
 const io = require('socket.io')(http, {
@@ -16,6 +14,9 @@ const io = require('socket.io')(http, {
   },
 });
 
+const { webChatServer } = require('./sockets');
+const { routeWebChat } = require('./routes');
+
 webChatServer(io);
 
 app.use(cors());
@@ -23,6 +24,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
+
+app.use('/', express.static(`${__dirname}/public`));
 
 app.use(routeWebChat.WebChat);
 
