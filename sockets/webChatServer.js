@@ -1,3 +1,5 @@
+const model = require('../models/modelWebChat');
+
 let listUser = [];
 
 const checkZero = (data) => {
@@ -38,11 +40,15 @@ const socketOnDisconnect = (socket) => {
   });
 };
 
-const socketOnWelcome = (socket) => {
-  const id = socket.id.substr(0, 16);
+const socketOnWelcome = async (socket) => {
+  // const id = socket.id.substr(0, 16);
+  const allMessages = await model.findAll();
+  const listMessages = allMessages.map((obj) => obj.message);
+  // console.log(listMessages);
   socket.emit('welcome', {
     listUser,
-    message: `Seja Bem Vindo!! Cliente ${id}`,
+    // message: `Seja Bem Vindo!! Cliente ${id}`,
+    listMessages,
   });
 };
 
@@ -54,8 +60,10 @@ const socketOnNewList = (io, socket) => {
 };
 
 const socketOnMessage = (io, socket) => {
-  socket.on('message', ({ chatMessage, nickname }) => {
-    const message = `${dateNow()} - ${nickname}: ${chatMessage}`;
+  socket.on('message', async ({ chatMessage, nickname }) => {
+    const date = dateNow();
+    const message = `${date} - ${nickname}: ${chatMessage}`;
+    await model.create(message, nickname, date);
     io.emit('message', message);
   });
 };

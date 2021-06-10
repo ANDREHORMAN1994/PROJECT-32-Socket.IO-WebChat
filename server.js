@@ -19,14 +19,19 @@ const { routeWebChat } = require('./routes');
 
 webChatServer(io);
 
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', express.static(`${__dirname}/public`));
 
 app.use(routeWebChat.WebChat);
+app.use((err, _req, res, _next) => {
+  const { status, message } = err;
+  res.status(status).json({
+    message,
+  });
+});
 
 http.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));

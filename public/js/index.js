@@ -34,14 +34,15 @@ const getLocalStorage = (key) => {
   return result;
 };
 
-socket.on('welcome', ({ listUser, message }) => {
-  setLocalStorage('listUser', listUser);
+socket.on('welcome', ({ listUser, listMessages }) => {
   const list = [];
   for (let i = listUser.length - 1; i >= 0; i -= 1) {
     list.push(listUser[i]);
   }
   updateListUsers(list);
-  newMessage(message, 'warning');
+  setLocalStorage('listUser', listUser);
+  // newMessage(message, 'warning');
+  listMessages.forEach((msg) => newMessage(msg));
 });
 
 socket.on('notification', ({ listUser, message }) => {
@@ -56,7 +57,6 @@ socket.on('logout', ({ listUser, message }) => {
 });
 
 // ATUALIZAR NICKNAME
-
 const inputNickName = document.querySelector('#nickname');
 const nickNameButton = document.querySelector('#nickname-button');
 
@@ -87,7 +87,6 @@ socket.on('newList', (newList) => {
 });
 
 // SCRIPT DA MENSAGEM
-
 const inputMessage = document.querySelector('#message');
 const form = document.querySelector('form');
 
