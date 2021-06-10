@@ -1,18 +1,15 @@
 body {
   align-items: center;
   background-color: gainsboro;
-  box-sizing: border-box;
   display: flex;
   flex-flow: column nowrap;
   height: 100vh;
   justify-content: space-between;
   margin: 0;
-  padding: 0;
   width: 100%;
 }
 
 .webchat-container {
-  /* background-color: red; */
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
@@ -41,7 +38,6 @@ input {
 }
 
 .nickname-users-container {
-  /* background-color: green; */
   align-items: stretch;
   display: flex;
   flex-flow: column nowrap;
@@ -63,7 +59,6 @@ input {
 }
 
 .messages-container {
-  /* overflow-y: scroll; */
   align-items: center;
   background-color: whitesmoke;
   display: flex;
@@ -74,7 +69,6 @@ input {
 }
 
 p {
-  /* margin: auto; */
   background-color: rosybrown;
   margin: 10px 0;
   padding: 20px;
