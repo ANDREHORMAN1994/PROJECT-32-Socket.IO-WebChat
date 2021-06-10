@@ -5,43 +5,45 @@
     <link rel="stylesheet" href="/style/index.css">
   </head>
   <body>
-    <h1><%= message %></h1>
-
-    <section class="webchat-container">
-      <section class="nickname-users-container">
-        <div class="nickname-container">
-          <input
-            type="text"
-            name="nickname"
-            id="nickname"
-            placeholder="Insira seu nickname"
-            data-testid="nickname-box"
-          />
-          <button
-            type="button"
-            data-testid="nickname-button"
-            id="nickname-button"
-          >
-            Salvar
-          </button>
-        </div>
-        <div class="users-container">
-          <ul></ul>
-        </div>
+    <main>
+      <h1><%= message %></h1>
+  
+      <section class="webchat-container">
+        <section class="nickname-users-container">
+          <div class="nickname-container">
+            <input
+              type="text"
+              name="nickname"
+              id="nickname"
+              placeholder="Insira seu nickname"
+              data-testid="nickname-box"
+            />
+            <button
+              type="button"
+              data-testid="nickname-button"
+              id="nickname-button"
+            >
+              Salvar
+            </button>
+          </div>
+          <div class="users-container">
+            <ul></ul>
+          </div>
+        </section>
+        <div class="messages-container"></div>
       </section>
-      <div class="messages-container"></div>
-    </section>
-
-    <form action="">
-      <input
-        type="text"
-        name="message"
-        id="message"
-        placeholder="Digite uma nova mensagem aqui"
-        data-testid="message-box"
-      />
-      <button type="submit" data-testid="send-button">Enviar</button>
-    </form>
+  
+      <form action="">
+        <input
+          type="text"
+          name="message"
+          id="message"
+          placeholder="Digite uma nova mensagem aqui"
+          data-testid="message-box"
+        />
+        <button type="submit" data-testid="send-button">Enviar</button>
+      </form>
+    </main>
   </body>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/index.js"></script>
