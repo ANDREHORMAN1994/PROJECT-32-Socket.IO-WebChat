@@ -1,0 +1,85 @@
+body {
+  background-color: gainsboro;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100vh;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.webchat-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 100%;
+  justify-content: space-around;
+  overflow-y: scroll;
+  width: 90%;
+}
+
+form {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 90%;
+}
+
+button {
+  font-size: medium;
+  font-weight: 900;
+  width: 100px;
+}
+
+input {
+  font-size: medium;
+  padding: 20px;
+  width: 100%;
+}
+
+.nickname-users-container {
+  align-items: stretch;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+  justify-content: space-around;
+  width: 50%;
+}
+
+.nickname-container {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+}
+
+.users-container {
+  background-color: gray;
+  height: 100%;
+  width: 100%;
+}
+
+.messages-container {
+  align-items: center;
+  background-color: whitesmoke;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+  justify-content: start;
+  width: 50%;
+}
+
+p {
+  background-color: rosybrown;
+  margin: 10px 0;
+  padding: 20px;
+  width: 80%;
+}
+
+.warning {
+  background-color: gainsboro;
+}
